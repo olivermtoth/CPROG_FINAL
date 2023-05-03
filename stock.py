@@ -8,7 +8,7 @@ class Stock():
         # Initalize variables
         self.ticker = ticker
         self.time_frame = time_frame
-        self.reader = Reader(self.ticker, self.time_frame)
+        self.reader = Reader(self.ticker)
 
         # Fill initial data
         raw_data = self.reader.get_daily_data()
