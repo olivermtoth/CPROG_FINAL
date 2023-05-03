@@ -11,12 +11,9 @@ class Stock():
         self.reader = Reader(self.ticker, self.time_frame)
 
         # Fill initial data
-        raw_data = self.reader.getdata()
+        raw_data = self.reader.get_daily_data()
         self.data = np.array(dict(raw_data['Time Series (Daily)']))
 
-
-meta = Stock('meta', '1d')
-print(type(meta.data))
         
 
         

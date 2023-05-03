@@ -1,5 +1,8 @@
+"""
+Main application file.
+Run as 'flask run' from the terminal
+"""
 from flask import Flask, render_template
-from markupsafe import escape
 
 app = Flask(__name__)
 

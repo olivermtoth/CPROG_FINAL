@@ -2,3 +2,4 @@ flask
 backtrader
 numpy
 pandas
+tensorflow
