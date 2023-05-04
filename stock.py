@@ -4,10 +4,9 @@ from datareader import Reader
 
 class Stock():
 
-    def __init__(self, ticker, time_frame):
+    def __init__(self, ticker):
         # Initalize variables
         self.ticker = ticker
-        self.time_frame = time_frame
         self.reader = Reader(self.ticker)
 
         # Fill initial data
