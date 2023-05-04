@@ -3,7 +3,8 @@ Getting data via https://www.alphavantage.co/ API
 """
 import requests
 from datetime import date, timedelta
-import pandas
+import numpy as np
+import json
 
 
 
@@ -32,8 +33,14 @@ class Reader():
         Get data from the last 100 day
         """
         url = f'https://www.alphavantage.co/query?function=TIME_SERIES_DAILY_ADJUSTED&symbol={self.ticker}&&apikey={self.apikey}'
-        data = requests.get(url,timeout=5).json()
-        return data
+        # raw_data = requests.get(url,timeout=5).json()
+        f = open('sample.json')
+        raw_data = json.load(f)
+        adjusted_price = np.array([
+            [float(raw_data["Time Series (Daily)"][x]['5. adjusted close']) for x in raw_data["Time Series (Daily)"]],
+            [float(raw_data["Time Series (Daily)"][x]['6. volume']) for x in raw_data["Time Series (Daily)"]]
+        ])
+        return adjusted_price
     
     def get_all_data(self):
         """
@@ -42,6 +49,8 @@ class Reader():
         url = f'https://www.alphavantage.co/query?function=TIME_SERIES_DAILY_ADJUSTED&symbol={self.ticker}&outputsize=full&apikey={self.apikey}'
         data = requests.get(url,timeout=5).json()
         return data
+    
 
-
-
+r = Reader("Meta")
+da = r.get_100_data()
+print(da)
