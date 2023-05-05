@@ -3,3 +3,4 @@ backtrader
 numpy
 pandas
 tensorflow
+finnhub-python
