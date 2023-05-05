@@ -4,7 +4,8 @@ Getting data via https://www.alphavantage.co/ API
 import requests
 from datetime import date, timedelta
 import numpy as np
-import json
+import finnhub
+import time
 
 
 
@@ -16,6 +17,11 @@ class Reader():
         """
         with open('API_KEY', 'r', encoding='utf-8') as f:
             self.apikey = f.readline()
+            f.close()
+        with open('API_KEY1', 'r', encoding='utf-8') as f:
+            self.apikey1 = f.readline()
+            f.close()
+        self.finnhub = finnhub.Client(self.apikey1)
         self.ticker = ticker
 
 
@@ -33,9 +39,16 @@ class Reader():
         Get data from the last 100 day
         """
         url = f'https://www.alphavantage.co/query?function=TIME_SERIES_DAILY_ADJUSTED&symbol={self.ticker}&&apikey={self.apikey}'
-        # raw_data = requests.get(url,timeout=5).json()
-        f = open('sample.json')
-        raw_data = json.load(f)
+        raw_data = requests.get(url,timeout=5).json()
+        # f = open('sample.json')
+        # raw_data = json.load(f)
+        
+        # https://stackoverflow.com/a/44815276
+        # https://stackoverflow.com/a/11001347
+        dates = list(raw_data["Time Series (Daily)"].keys())
+        start_date = time.mktime(time.strptime(dates[0], '%Y-%m-%d'))
+        end_date = time.mktime(time.strptime(dates[-1], '%Y-%m-%d'))
+
         adjusted_price = np.array([
             [float(raw_data["Time Series (Daily)"][x]['5. adjusted close']) for x in raw_data["Time Series (Daily)"]],
             [float(raw_data["Time Series (Daily)"][x]['6. volume']) for x in raw_data["Time Series (Daily)"]]
@@ -47,10 +60,12 @@ class Reader():
         Get the full available historical price
         """
         url = f'https://www.alphavantage.co/query?function=TIME_SERIES_DAILY_ADJUSTED&symbol={self.ticker}&outputsize=full&apikey={self.apikey}'
-        data = requests.get(url,timeout=5).json()
-        return data
+        raw_data = requests.get(url,timeout=5).json()
+        # f = open('sample.json')
+        # raw_data = json.load(f)
+        adjusted_price = np.array([
+            [float(raw_data["Time Series (Daily)"][x]['5. adjusted close']) for x in raw_data["Time Series (Daily)"]],
+            [float(raw_data["Time Series (Daily)"][x]['6. volume']) for x in raw_data["Time Series (Daily)"]]
+        ])
+        return adjusted_price
     
-
-r = Reader("Meta")
-da = r.get_100_data()
-print(da)
