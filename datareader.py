@@ -1,12 +1,12 @@
 """
-Getting data via https://www.alphavantage.co/ API
+Getting data via https://www.alphavantage.co/ API for stock prices
+and https://finnhub.io/ for other finacial data and indicators.
 """
 import requests
-from datetime import date, timedelta
 import numpy as np
-import finnhub
-import time
-
+import pandas as pd
+import ta
+# TODO: Finish rsi
 
 
 class Reader():
@@ -18,42 +18,23 @@ class Reader():
         with open('API_KEY', 'r', encoding='utf-8') as f:
             self.apikey = f.readline()
             f.close()
-        with open('API_KEY1', 'r', encoding='utf-8') as f:
-            self.apikey1 = f.readline()
-            f.close()
-        self.finnhub = finnhub.Client(self.apikey1)
         self.ticker = ticker
-
-
-    def get_daily_data(self):
-        """
-        Get daily adjusted price
-        """
-        url = f'https://www.alphavantage.co/query?function=TIME_SERIES_DAILY_ADJUSTED&symbol={self.ticker}&apikey={self.apikey}'
-        data = requests.get(url,timeout=5).json()
-        yesterday = str(date.today()-timedelta(days = 1))
-        return data["Time Series (Daily)"][yesterday]['5. adjusted close']
     
-    def get_100_data(self):
+    def get_100days_data(self):
         """
         Get data from the last 100 day
         """
-        url = f'https://www.alphavantage.co/query?function=TIME_SERIES_DAILY_ADJUSTED&symbol={self.ticker}&&apikey={self.apikey}'
+        url = f'https://www.alphavantage.co/query?function=TIME_SERIES_DAILY_ADJUSTED&symbol={self.ticker}&apikey={self.apikey}'
         raw_data = requests.get(url,timeout=5).json()
-        # f = open('sample.json')
-        # raw_data = json.load(f)
-        
-        # https://stackoverflow.com/a/44815276
-        # https://stackoverflow.com/a/11001347
-        dates = list(raw_data["Time Series (Daily)"].keys())
-        start_date = time.mktime(time.strptime(dates[0], '%Y-%m-%d'))
-        end_date = time.mktime(time.strptime(dates[-1], '%Y-%m-%d'))
-
-        adjusted_price = np.array([
-            [float(raw_data["Time Series (Daily)"][x]['5. adjusted close']) for x in raw_data["Time Series (Daily)"]],
-            [float(raw_data["Time Series (Daily)"][x]['6. volume']) for x in raw_data["Time Series (Daily)"]]
-        ])
-        return adjusted_price
+        data = pd.DataFrame.from_dict(raw_data["Time Series (Daily)"]).T
+        data = data.iloc[::-1]
+        res = pd.DataFrame()
+        res['prices'] = data['5. adjusted close']
+        res['volume'] = data['6. volume']
+        # res['rsi'] = ta.momentum.RSIIndicator(data['5. adjusted close']).rsi()
+        res['macd'] = ta.trend.MACD(data['5. adjusted close']).macd()
+        res = res.iloc[::-1]
+        return res
     
     def get_all_data(self):
         """
@@ -61,11 +42,12 @@ class Reader():
         """
         url = f'https://www.alphavantage.co/query?function=TIME_SERIES_DAILY_ADJUSTED&symbol={self.ticker}&outputsize=full&apikey={self.apikey}'
         raw_data = requests.get(url,timeout=5).json()
-        # f = open('sample.json')
-        # raw_data = json.load(f)
-        adjusted_price = np.array([
-            [float(raw_data["Time Series (Daily)"][x]['5. adjusted close']) for x in raw_data["Time Series (Daily)"]],
-            [float(raw_data["Time Series (Daily)"][x]['6. volume']) for x in raw_data["Time Series (Daily)"]]
-        ])
-        return adjusted_price
-    
+        data = pd.DataFrame.from_dict(raw_data["Time Series (Daily)"]).T
+        data = data.iloc[::-1]
+        res = pd.DataFrame()
+        res['prices'] = data['5. adjusted close']
+        res['volume'] = data['6. volume']
+        # res['rsi'] = ta.momentum.RSIIndicator(data['5. adjusted close']).rsi()
+        res['macd'] = ta.trend.MACD(data['5. adjusted close']).macd()
+        res = res.iloc[::-1]
+        return res
