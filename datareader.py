@@ -1,12 +1,11 @@
 """
 Getting data via https://www.alphavantage.co/ API for stock prices
-and https://finnhub.io/ for other finacial data and indicators.
+and calculating indicators with ta.
 """
 import requests
 import numpy as np
 import pandas as pd
 import ta
-# TODO: Finish rsi
 
 
 class Reader():
@@ -26,15 +25,15 @@ class Reader():
         """
         url = f'https://www.alphavantage.co/query?function=TIME_SERIES_DAILY_ADJUSTED&symbol={self.ticker}&apikey={self.apikey}'
         raw_data = requests.get(url,timeout=5).json()
-        data = pd.DataFrame.from_dict(raw_data["Time Series (Daily)"]).T
-        data = data.iloc[::-1]
+        data = pd.DataFrame.from_dict(raw_data["Time Series (Daily)"], dtype=float).T.iloc[::-1]
         res = pd.DataFrame()
-        res['prices'] = data['5. adjusted close']
+        res['price'] = data['5. adjusted close']
         res['volume'] = data['6. volume']
-        # res['rsi'] = ta.momentum.RSIIndicator(data['5. adjusted close']).rsi()
+        res['rsi'] = ta.momentum.RSIIndicator((res['price'])).rsi()
         res['macd'] = ta.trend.MACD(data['5. adjusted close']).macd()
-        res = res.iloc[::-1]
-        return res
+        res['adx'] = ta.trend.ADXIndicator(data['2. high'], data['3. low'], data['4. close'] ).adx()
+        res['obv'] = ta.volume.OnBalanceVolumeIndicator(data['5. adjusted close'], data['6. volume']).on_balance_volume()
+        return res.iloc[::-1].dropna() 
     
     def get_all_data(self):
         """
@@ -42,12 +41,13 @@ class Reader():
         """
         url = f'https://www.alphavantage.co/query?function=TIME_SERIES_DAILY_ADJUSTED&symbol={self.ticker}&outputsize=full&apikey={self.apikey}'
         raw_data = requests.get(url,timeout=5).json()
-        data = pd.DataFrame.from_dict(raw_data["Time Series (Daily)"]).T
-        data = data.iloc[::-1]
+        data = pd.DataFrame.from_dict(raw_data["Time Series (Daily)"], dtype=float).T.iloc[::-1]
         res = pd.DataFrame()
-        res['prices'] = data['5. adjusted close']
+        res['price'] = data['5. adjusted close']
         res['volume'] = data['6. volume']
-        # res['rsi'] = ta.momentum.RSIIndicator(data['5. adjusted close']).rsi()
+        res['rsi'] = ta.momentum.RSIIndicator((res['price'])).rsi()
         res['macd'] = ta.trend.MACD(data['5. adjusted close']).macd()
-        res = res.iloc[::-1]
-        return res
+        res['adx'] = ta.trend.ADXIndicator(data['2. high'], data['3. low'], data['4. close'] ).adx()
+        res['obv'] = ta.volume.OnBalanceVolumeIndicator(data['5. adjusted close'], data['6. volume']).on_balance_volume()
+        return res.iloc[::-1].dropna()
+    
