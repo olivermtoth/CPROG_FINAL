@@ -2,4 +2,4 @@ flask
 numpy
 pandas
 tensorflow
-talib
+ta
