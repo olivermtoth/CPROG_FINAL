@@ -1,6 +1,9 @@
 import numpy as np
 import pandas as pd
 from datareader import Reader
+import tensorflow as tf
+import os
+os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
 
 class Stock():
 
@@ -8,11 +11,16 @@ class Stock():
         # Initalize variables
         self.ticker = ticker
         self.reader = Reader(self.ticker)
+        self.model = tf.keras.models.Sequential()
 
         # Fill initial data
-        raw_data = self.reader.get_daily_data()
-        self.data = np.array(dict(raw_data['Time Series (Daily)']))
+        self.price = self.reader.get_all_data()['price']
 
-        
+    def load_weights(self):
+        pass
 
-        
+    def make_json(self):
+        res = self.price.to_json()
+        return res
+
+

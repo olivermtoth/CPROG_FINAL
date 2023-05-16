@@ -1,12 +1,8 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TTrade</title>
-</head>
-<body>
-    Welcome to 
-</body>
-</html>
+{% extends "layout.html" %}
+
+{% block body %} 
+<form action="/" method="post">
+    <input autocomplete="off" autofocus name="stock" placeholder="Enter Ticker" type="text">
+    <button type="submit">Submit</button>
+</form>
+{% endblock %}
