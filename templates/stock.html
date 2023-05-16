@@ -1,9 +1,10 @@
 {% extends "layout.html" %} 
 
 {% block body %}
-{{stock}}
-
-{{data|tojson}}
+<h4>Current Price: ${{price}}</h4>
+<h4>{{stock}}</h4>
+<br>
+{{data}}
 
 
 {% endblock %}

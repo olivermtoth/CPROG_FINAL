@@ -15,6 +15,7 @@ class Stock():
 
         # Fill initial data
         self.price = self.reader.get_all_data()['price']
+        self.current_price = self.reader.get_current_price()
 
     def load_weights(self):
         pass
@@ -22,5 +23,6 @@ class Stock():
     def make_json(self):
         res = self.price.to_json()
         return res
+    
 
 

@@ -54,4 +54,9 @@ class Reader():
         res['obv'] = ta.volume.OnBalanceVolumeIndicator(data['5. adjusted close'], data['6. volume']).on_balance_volume()
         res['target'] = (data['5. adjusted close'] < data['shifted']).astype(int)
         return res.dropna()
-
+    
+    def get_current_price(self):
+        url = f'https://www.alphavantage.co/query?function=TIME_SERIES_INTRADAY&interval=1min&symbol={self.ticker}&apikey={self.apikey}'
+        raw_data = requests.get(url).json()
+        data = pd.DataFrame.from_dict(raw_data["Time Series (1min)"], dtype=float).T
+        return data['1. open'].iloc[0]

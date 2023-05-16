@@ -19,4 +19,4 @@ def hello():
         stock = request.form.get("stock")
         s = Stock(stock)
         data = s.make_json()
-        return render_template("stock.html", stock=stock, data=data, balance=balance)
+        return render_template("stock.html", stock=stock, data=data, balance=balance, price= s.current_price)
