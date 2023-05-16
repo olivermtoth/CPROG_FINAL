@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <script
+            type="text/javascript"
+            src="https://unpkg.com/lightweight-charts/dist/lightweight-charts.standalone.development.js"
+        ></script>
+        <style>
+            #my-chart {
+                height: 100vh;
+                width: 100vw;
+            }
+        </style>
+
+
+    <title>OTrader</title>
+</head>
+<body>
+    <h3>Current Balance: ${{balance}}</h3>
+    {% block body %}{% endblock %}
+</body>
+</html>
