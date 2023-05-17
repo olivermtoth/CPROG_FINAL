@@ -11,18 +11,15 @@ class Stock():
         # Initalize variables
         self.ticker = ticker
         self.reader = Reader(self.ticker)
-        self.model = tf.keras.models.Sequential()
+        self.model = tf.keras.models.
 
         # Fill initial data
         self.price = self.reader.get_all_data()['price']
         self.current_price = self.reader.get_current_price()
 
-    def load_weights(self):
-        pass
 
-    def make_json(self):
-        res = self.price.to_json()
-        return res
-    
-
-
+    def __predict__(self, data):
+        prediction = self.model.predict(data)
+        if prediction >= self.price:
+            return True
+        return False

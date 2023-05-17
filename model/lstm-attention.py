@@ -10,23 +10,21 @@ import tensorflow as tf
 import tensorflow as tf
 
 class AttentionsLSTM(tf.keras.Model):
-    def __init__(self, num_units, num_classes, lstm_dropout_rate=0.1, attention_dropout_rate=0.1, output_dropout_rate=0.1):
+    def __init__(self, num_units, lstm_dropout_rate=0.2):
         super(AttentionsLSTM, self).__init__()
         
         # Define the LSTM layer
-        self.lstm_layer = tf.keras.layers.LSTM(units=num_units, return_sequences=True, dropout=lstm_dropout_rate)
+        self.lstm_layer = tf.keras.layers.LSTM(units=num_units, return_sequences=False, dropout=lstm_dropout_rate)
         
         # Define the attention mechanism
         self.attention_layer = tf.keras.layers.Dense(units=num_units, activation='tanh')
-        self.attention_dropout = tf.keras.layers.Dropout(rate=attention_dropout_rate)
         self.attention_weight_layer = tf.keras.layers.Dense(units=1, activation='softmax')
         
         # Define the reshape layer
-        self.reshape_layer = tf.keras.layers.Reshape((-1, num_units))
+        self.reshape_layer = tf.keras.layers.Reshape((-1, 120))
         
         # Define the output layer
-        self.output_layer = tf.keras.layers.Dense(units=num_classes, activation='softmax')
-        self.output_dropout = tf.keras.layers.Dropout(rate=output_dropout_rate)
+        self.output_layer = tf.keras.layers.Dense(1, activation='softmax')
         
     def call(self, inputs):
         # Reshape the inputs
