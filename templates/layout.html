@@ -15,12 +15,10 @@
                 width: 100vw;
             }
         </style>
-
-
     <title>OTrader</title>
 </head>
 <body>
-    <h3>Current Balance: ${{balance}}</h3>
+    <h3>Current Balance: {{"$%.2f"|format(balance)}}</h3>
     {% block body %}{% endblock %}
 </body>
 </html>
