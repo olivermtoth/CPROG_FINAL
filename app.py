@@ -20,7 +20,7 @@ def hello():
             stock = request.form.get("stock")
             s = Stock(stock)
             # data = s.make_json()
-            return render_template("stock.html", stock=stock, balance=balance, price= s.current_price)
+            return render_template("stock.html", stock=stock, balance=balance, price= s.current_price, data=s.reader.get_data_for_charts())
         except KeyError:
             print("Key Error raised, directing to the error page")
             return render_template("tickererror.html", balance=balance)
