@@ -6,6 +6,7 @@ import requests
 import numpy as np
 import pandas as pd
 import ta
+import json
 
 
 class Reader():
@@ -57,13 +58,10 @@ class Reader():
     
     def get_data_for_charts(self):
         url = f'https://www.alphavantage.co/query?function=TIME_SERIES_DAILY_ADJUSTED&symbol={self.ticker}&outputsize=full&apikey={self.apikey}'
-        raw_data = requests.get(url,timeout=5).json()
-        res = []
-        for x in raw_data["Time Series (Daily)"].keys():
-            res.append({'date':x, 'open':raw_data["Time Series (Daily)"][x]['1. open'],
-                        'high':raw_data["Time Series (Daily)"][x]['2. high'],
-                        'low':raw_data["Time Series (Daily)"][x]['3. low'],
-                        'close':raw_data["Time Series (Daily)"][x]['4. close']})
+        raw_data = requests.get(url,timeout=5).json()["Time Series (Daily)"]
+        res =  []
+        for date in raw_data.keys():
+            res.append({'date':date, 'open':raw_data[date]['1. open'], 'high':raw_data[date]['2. high'], 'low':raw_data[date]['3. low'], 'close':raw_data[date]['4. close']})
         return res
     
     def get_current_price(self):
@@ -71,4 +69,3 @@ class Reader():
         raw_data = requests.get(url).json()
         data = pd.DataFrame.from_dict(raw_data["Time Series (1min)"], dtype=float).T
         return data['1. open'].iloc[0]
-    
