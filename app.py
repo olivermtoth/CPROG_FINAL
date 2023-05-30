@@ -6,7 +6,7 @@ from flask import Flask, render_template, request
 import json
 from stock import Stock
 import os
-from flask_apscheduler import APScheduler
+# from flask_apscheduler import APScheduler
 
 # set configuration values
 class Config:

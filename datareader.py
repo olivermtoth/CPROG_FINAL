@@ -62,7 +62,7 @@ class Reader():
         res =  []
         for date in raw_data.keys():
             res.append({'date':date, 'open':raw_data[date]['1. open'], 'high':raw_data[date]['2. high'], 'low':raw_data[date]['3. low'], 'close':raw_data[date]['4. close']})
-        return res
+        return res[::-1]
     
     def get_current_price(self):
         url = f'https://www.alphavantage.co/query?function=TIME_SERIES_INTRADAY&interval=1min&symbol={self.ticker}&apikey={self.apikey}'
