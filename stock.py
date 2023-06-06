@@ -11,16 +11,21 @@ class Stock():
         # Initalize variables
         self.ticker = ticker
         self.reader = Reader(self.ticker)
-        # self.model = tf.keras.models()
+        # self.model = tf.keras.models.load_model(f'/model/{self.ticker}.h5')
 
         # Fill initial data
-        self.price = self.reader.get_all_data()["price"]
-        self.current_price = self.reader.get_current_price()
+        self.current_price = None
+        self.chart_data = None
+
+    def get_data(self):
+        self.chart_data = self.reader.get_all_data(for_chart=True)
+        self.current_price = self.chart_data[-1]['close']
+        
 
 
     # def __predict__(self, data):
     #     prediction = self.model.predict(data)
-    #     if prediction >= self.price:
+    #     if prediction >= self.cuurent_price:
     #         return True
     #     return False
     
